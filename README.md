@@ -5,6 +5,18 @@
 
 > 1, Experimental - This project might die, it's undertested and underdocumented, and redesigns and breaking changes are likely
 
+### Usage
+
+hq reads html on standard-input and selects elements based on a query-selector.
+
+```sh
+hq <selector> [--all]
+```
+
+```sh
+curl -sq "https://www.lipsum.com/feed/html" | hq p --all
+```
+
 ### Files
 
 ```
