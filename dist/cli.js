@@ -13,4 +13,3 @@ const cli = () => {
     hq(args);
 };
 cli();
-//# sourceMappingURL=cli.js.map

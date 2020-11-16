@@ -12,6 +12,24 @@ const readStream = async (stream: NodeJS.ReadableStream) => {
 
 const getExtractor = (args:HqArgs) => {
   return (elem:any) => {
+    const result:{ [key:string]: any } = {
+      text: elem.textContent
+    }
+
+    for (let ith = 0; ith < elem.attributes.length; ith++) {
+      let {
+        name,
+        value
+      } = elem.attributes[ith]
+
+      result[name] = value
+    }
+
+    return result
+  }
+
+
+  return (elem:any) => {
     return {text: elem.textContent}
   }
 }

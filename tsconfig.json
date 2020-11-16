@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "moduleResolution": "node",
     "module": "ESNext",
     "outDir": "dist",

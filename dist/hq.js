@@ -8,6 +8,16 @@ const readStream = async (stream) => {
 };
 const getExtractor = (args) => {
     return (elem) => {
+        const result = {
+            text: elem.textContent
+        };
+        for (let ith = 0; ith < elem.attributes.length; ith++) {
+            let { name, value } = elem.attributes[ith];
+            result[name] = value;
+        }
+        return result;
+    };
+    return (elem) => {
         return { text: elem.textContent };
     };
 };
@@ -25,11 +35,9 @@ const hq = async (args) => {
     }
     else {
         const elem = await page.$(args['<selector>']);
-        console.log(await elem?.jsonValue());
         const text = await page.evaluate(extractor, elem);
         console.log(JSON.stringify(text, null, 2));
     }
     await browser.close();
 };
 export default hq;
-//# sourceMappingURL=hq.js.map
