@@ -2,6 +2,13 @@
 import { HqArgs } from './types'
 import puppeteer from 'puppeteer'
 
+/**
+ * readStream reads content from a stream and returns a utf8 string
+ *
+ * @param stream the stream to read from
+ *
+ * @returns {string} a utf8 stream
+ */
 const readStream = async (stream: NodeJS.ReadableStream) => {
   const chunks:any[] = []
   for await (const chunk of stream) {
@@ -10,28 +17,26 @@ const readStream = async (stream: NodeJS.ReadableStream) => {
   return Buffer.concat(chunks).toString('utf8')
 }
 
-const getExtractor = (args:HqArgs) => {
-  return (elem:any) => {
-    const result:{ [key:string]: any } = {
-      text: elem.textContent
-    }
-
-    for (let ith = 0; ith < elem.attributes.length; ith++) {
-      let {
-        name,
-        value
-      } = elem.attributes[ith]
-
-      result[name] = value
-    }
-
-    return result
+/**
+ * Read the text and attribute content of an element
+ *
+ * @returns a function that retried
+ */
+const extractElement = (elem:any) => {
+  const result:{ [key:string]: any } = {
+    text: elem.textContent
   }
 
+  for (let ith = 0; ith < elem.attributes.length; ith++) {
+    let {
+      name,
+      value
+    } = elem.attributes[ith]
 
-  return (elem:any) => {
-    return {text: elem.textContent}
+    result[name] = value
   }
+
+  return result
 }
 
 const hq = async (args:HqArgs) => {
@@ -42,12 +47,12 @@ const hq = async (args:HqArgs) => {
 
   await page.setContent(html)
 
-  const extractor = getExtractor(args)
+
 
   if (args['--all']) {
     const elems = await page.$$(args['<selector>'])
 
-    const contentPromises = elems.map(elem => page.evaluate(extractor, elem))
+    const contentPromises = elems.map(elem => page.evaluate(extractElement, elem))
 
     const content = await Promise.all(contentPromises)
 
@@ -57,7 +62,7 @@ const hq = async (args:HqArgs) => {
   } else {
     const elem = await page.$(args['<selector>'])
 
-    const text = await page.evaluate(extractor, elem)
+    const text = await page.evaluate(extractElement, elem)
     console.log(JSON.stringify(text, null, 2))
   }
 
