@@ -31,7 +31,9 @@ const hq = async (args) => {
         const elems = await page.$$(args['<selector>']);
         const contentPromises = elems.map(elem => page.evaluate(extractor, elem));
         const content = await Promise.all(contentPromises);
-        console.log(JSON.stringify(content, null, 2));
+        for (const entry of content) {
+            console.log(JSON.stringify(entry, null, 2));
+        }
     }
     else {
         const elem = await page.$(args['<selector>']);
