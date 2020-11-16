@@ -1,7 +1,7 @@
 
 # hq
 
-`hq` pulls information from webpages. It's mainly intended to interlink with (https://stedolan.github.io/jq/)[jq], allowing you to:
+`hq` pulls information from webpages. It's mainly intended to interlink with [jq](https://stedolan.github.io/jq), allowing you to:
 
 - pull down a website using curl
 - extract links, headers, or whatever target content you want
