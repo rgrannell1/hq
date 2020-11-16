@@ -20,7 +20,9 @@ const readStream = async (stream: NodeJS.ReadableStream) => {
 /**
  * Read the text and attribute content of an element
  *
- * @returns a function that retried
+ * @param elem a puppeteer element-handle
+ *
+ * @returns the attributes and text-content for an element
  */
 const extractElement = (elem:any) => {
   const result:{ [key:string]: any } = {
@@ -39,6 +41,12 @@ const extractElement = (elem:any) => {
   return result
 }
 
+/**
+ * the main application
+ *
+ * @param args CLI arguments
+ *
+ */
 const hq = async (args:HqArgs) => {
   const html = await readStream(process.stdin)
 
@@ -46,8 +54,6 @@ const hq = async (args:HqArgs) => {
   const page = await browser.newPage()
 
   await page.setContent(html)
-
-
 
   if (args['--all']) {
     const elems = await page.$$(args['<selector>'])
