@@ -1,18 +1,17 @@
-import execa from 'execa';
-import * as fs from 'fs';
-const readStream = async (stream) => {
-    const chunks = [];
-    for await (const chunk of stream) {
-        chunks.push(chunk);
-    }
-    return Buffer.concat(chunks).toString('utf8');
+import stream from 'stream';
+import child_process from 'child_process';
+const { spawn } = child_process;
+const { Readable } = stream;
+const testHq = async () => {
+    const hq = spawn('./dist/src/cli.js', ['p']);
+    hq.stdin.write(`<html><p attr0=val0>content0</html>\n`);
+    hq.stdin.end();
+    hq.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+    hq.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+    console.log('x');
 };
-const test = async () => {
-    const subprocess = execa('./dist/src/cli.js');
-    fs.createReadStream('./example.html').pipe(subprocess.stdin);
-    const content = await readStream(subprocess.stdout);
-    console.log(content);
-    console.log(content);
-    console.log(content);
-};
-test();
+testHq();

@@ -1,0 +1,25 @@
+name: hq
+grade: stable
+version: v0.1.0
+base: core20
+
+license: MIT
+
+summary: Commandline HTTP processor
+
+description: >
+  Commandline HTTP processor
+
+confinement: strict
+
+apps:
+  hq:
+    plugs:
+      - network
+    command: bin/hq
+
+parts:
+  hq:
+    source: .
+    plugin: npm
+    npm-node-version: 15.0.1
