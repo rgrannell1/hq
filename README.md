@@ -11,6 +11,10 @@
 
 > 1, Experimental - This project might die, it's undertested and underdocumented, and redesigns and breaking changes are likely
 
+### Name
+
+This project's name is either styled after`jq`, or Hylaeus quadratus
+
 ### Usage
 
 hq reads html on standard-input and selects elements based on a query-selector.
