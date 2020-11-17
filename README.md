@@ -24,7 +24,7 @@ hq <selector> [--all]
 ```
 
 ```sh
-curl -sq "https://www.lipsum.com/feed/html" | hq p --all
+curl -sq "https://www.lipsum.com/feed/html" | hq p
 ```
 
 ### Files
