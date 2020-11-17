@@ -51,7 +51,6 @@ export const hq = async (args, opts = {}) => {
     for (const entry of await Promise.all(contentPromises)) {
         output.write(JSON.stringify(entry, null, 2) + '\n');
     }
-    const printed = await readStream(output);
     await browser.close();
 };
 export default hq;

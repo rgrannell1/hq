@@ -24,17 +24,17 @@ const testExtractElement = async () => {
 const testHq = async (childTest) => {
     const html = `<html><p attr0=val0>content</p></html>`;
     await new Promise(resolve => {
+        const out = {
+            write(content) {
+                const parsed = JSON.parse(content);
+                tap.equals(parsed.text, 'content');
+                tap.equals(parsed.attr0, 'val0');
+                resolve();
+            }
+        };
         hq({ '<selector>': 'p' }, {
             in: Readable.from(Buffer.from(html)),
-            out: {
-                write(content) {
-                    const parsed = JSON.parse(content);
-                    tap.equals(parsed.text, 'content');
-                    tap.equals(parsed.attr0, 'val0');
-                    childTest.end();
-                    process.exit(0);
-                }
-            }
+            out
         });
     });
 };

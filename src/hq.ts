@@ -72,8 +72,6 @@ export const hq = async (args: HqArgs, opts: HqOpts = {}) => {
     output.write(JSON.stringify(entry, null, 2) + '\n')
   }
 
-  const printed = await readStream(output)
-
   await browser.close()
 }
 
