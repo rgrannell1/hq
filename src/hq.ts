@@ -1,5 +1,8 @@
 
-import { HqArgs } from './types'
+import {
+  HqArgs,
+  HqOpts
+} from './types'
 import puppeteer from 'puppeteer'
 
 /**
@@ -9,7 +12,7 @@ import puppeteer from 'puppeteer'
  *
  * @returns {string} a utf8 stream
  */
-const readStream = async (stream: NodeJS.ReadableStream) => {
+export const readStream = async (stream: NodeJS.ReadableStream) => {
   const chunks:any[] = []
   for await (const chunk of stream) {
     chunks.push(chunk)
@@ -24,7 +27,7 @@ const readStream = async (stream: NodeJS.ReadableStream) => {
  *
  * @returns the attributes and text-content for an element
  */
-const extractElement = (elem:any) => {
+export const extractElement = (elem:any) => {
   const result:{ [key:string]: any } = {
     text: elem.textContent
   }
@@ -47,10 +50,16 @@ const extractElement = (elem:any) => {
  * @param args CLI arguments
  *
  */
-const hq = async (args:HqArgs) => {
-  const html = await readStream(process.stdin)
+export const hq = async (args: HqArgs, opts: HqOpts = {}) => {
+  const input = opts.in ?? process.stdin
+  const output = opts.out ?? process.stdout
 
-  const browser = await puppeteer.launch()
+  const html = await readStream(input)
+
+  const browser = await puppeteer.launch({
+    headless: true
+  })
+
   const page = await browser.newPage()
 
   // keep it simple, stupid.
@@ -60,8 +69,10 @@ const hq = async (args:HqArgs) => {
   const contentPromises = elems.map(elem => page.evaluate(extractElement, elem))
 
   for (const entry of await Promise.all(contentPromises)) {
-    console.log(JSON.stringify(entry, null, 2))
+    output.write(JSON.stringify(entry, null, 2) + '\n')
   }
+
+  const printed = await readStream(output)
 
   await browser.close()
 }

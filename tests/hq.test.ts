@@ -1,22 +1,68 @@
 
+import tap from 'tap'
 import stream from 'stream'
-import fetch from 'node-fetch'
-import execa from 'execa'
-import * as fs from 'fs'
-
 const { Readable } = stream
 
-const test = async () => {
-  const subprocess = execa('./dist/src/cli.js')
-  const readable = Readable.from([
-    `<html><p attr0=val0>content0</html>`
-  ])
+import {
+  readStream,
+  extractElement,
+  hq
+} from '../src/hq.js'
 
-  readable.pipe(subprocess.stdin as any)
+const testReadStream = async () => {
+  for (const testInput of ['test']) {
+    const testStream = Readable.from([Buffer.from(testInput)])
+    const out = await readStream(testStream)
 
-  const {stdout} = await subprocess
-  console.log(stdout)
+    tap.equals('test', out)
+  }
 }
 
-test()
+const testExtractElement = async () => {
+  // -- a mock dom element
+  const $elem = {
+    textContent: 'test',
+    attributes: [
+      { name: 'key0', value: 'val0' }
+    ]
+  }
+  const result = extractElement($elem)
 
+  tap.equals(result.text, 'test')
+  tap.equals(result.key0, 'val0')
+}
+
+const testHq = async (childTest:any) => {
+  const html = `<html><p attr0=val0>content</p></html>`
+
+  await new Promise(resolve => {
+    hq({ '<selector>': 'p' }, {
+      in: Readable.from( Buffer.from(html) ),
+      out: {
+        write(content:string) {
+          const parsed = JSON.parse(content)
+
+          tap.equals(parsed.text, 'content')
+          tap.equals(parsed.attr0, 'val0')
+
+          childTest.end()
+          process.exit(0)
+        }
+      }
+    })
+  })
+}
+
+tap.test('readStream works as expected for test-examples', async childTest => {
+  await testReadStream()
+  childTest.end()
+})
+
+tap.test('extractElement works as expected for test-examples', async childTest => {
+  await testExtractElement()
+  childTest.end()
+})
+
+tap.test('hq produces the expected', async childTest => {
+  await testHq(childTest)
+})
