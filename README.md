@@ -1,6 +1,8 @@
 
 # hq
 
+![CI](https://github.com/rgrannell1/hq/workflows/CI/badge.svg)
+
 `hq` pulls information from webpages. It's mainly intended to interlink with [jq](https://stedolan.github.io/jq), allowing you to:
 
 - pull down a website using curl
