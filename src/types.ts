@@ -1,5 +1,4 @@
 
 export interface HqArgs {
-  '<selector>': string,
-  '--all': boolean
+  '<selector>': string
 }

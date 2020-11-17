@@ -53,23 +53,14 @@ const hq = async (args:HqArgs) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
 
+  // keep it simple, stupid.
   await page.setContent(html)
 
-  if (args['--all']) {
-    const elems = await page.$$(args['<selector>'])
+  const elems = await page.$$(args['<selector>'])
+  const contentPromises = elems.map(elem => page.evaluate(extractElement, elem))
 
-    const contentPromises = elems.map(elem => page.evaluate(extractElement, elem))
-
-    const content = await Promise.all(contentPromises)
-
-    for (const entry of content) {
-      console.log(JSON.stringify(entry, null, 2))
-    }
-  } else {
-    const elem = await page.$(args['<selector>'])
-
-    const text = await page.evaluate(extractElement, elem)
-    console.log(JSON.stringify(text, null, 2))
+  for (const entry of await Promise.all(contentPromises)) {
+    console.log(JSON.stringify(entry, null, 2))
   }
 
   await browser.close()
