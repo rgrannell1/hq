@@ -30,8 +30,9 @@ curl -sq "https://www.lipsum.com/feed/html" | hq p
 ### Files
 
 ```
-  dist/                        compiled code, so people don't need to manually compile to test
+  dist/     compiled code, so people don't need to manually compile to test
   src/
+  test/     tests for hq
 ```
 
 ### License
