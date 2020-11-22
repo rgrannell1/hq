@@ -5,7 +5,7 @@ Name:
   hq - commandline HTTP processor
 
 Usage:
-  hq <selector>
+  hq <selector> [<url>]
 Description:
   hq selects HTML content using a standard JS selector and returns matching content in JSON format. This includes both the
   element's text-content and any HTML attributes that were set.

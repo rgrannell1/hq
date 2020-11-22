@@ -54,16 +54,18 @@ export const hq = async (args: HqArgs, opts: HqOpts = {}) => {
   const input = opts.in ?? process.stdin
   const output = opts.out ?? process.stdout
 
-  const html = await readStream(input)
-
   const browser = await puppeteer.launch({
     headless: true
   })
 
   const page = await browser.newPage()
 
-  // keep it simple, stupid.
-  await page.setContent(html)
+  if (args['<url>']) {
+    await page.goto(args['<url>'])
+  } else {
+    const html = await readStream(input)
+    await page.setContent(html)
+  }
 
   const elems = await page.$$(args['<selector>'])
   const contentPromises = elems.map(elem => page.evaluate(extractElement, elem))
