@@ -22,7 +22,7 @@ This project's name is either styled after`jq`, or Hylaeus quadratus
 hq reads html on standard-input and selects elements based on a query-selector.
 
 ```sh
-hq <selector> [--all]
+hq <selector>
 ```
 
 ```sh
