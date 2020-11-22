@@ -35,7 +35,6 @@ const testExtractElement = async () => {
 const testHq = async (childTest:any) => {
   const html = `<html><p attr0=val0>content</p></html>`
 
-
   await new Promise(resolve => {
     const out = {
       write(content: string) {

@@ -19,7 +19,8 @@ This project's name is either styled after`jq`, or Hylaeus quadratus
 
 ### Usage
 
-hq reads html on standard-input and selects elements based on a query-selector.
+hq reads html on standard-input and selects elements based on a query-selector. It can also open a URL directly via Puppeteer, which can be helpful
+for accessing sites with client-side rendering.
 
 ```sh
 hq <selector>
