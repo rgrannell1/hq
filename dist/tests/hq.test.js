@@ -32,7 +32,7 @@ const testHq = async (childTest) => {
                 resolve();
             }
         };
-        hq({ '<selector>': 'p' }, {
+        hq({ '<selector>': 'p', ls: false }, {
             in: Readable.from(Buffer.from(html)),
             out
         });

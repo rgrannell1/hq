@@ -30,6 +30,37 @@ export const extractElement = (elem) => {
     }
     return result;
 };
+export const suggestSelectors = async (page, args) => {
+    const $elems = await page.$$('*');
+    const state = {
+        ids: [],
+        classes: []
+    };
+    for (const $elem of $elems) {
+        const classes = await (await $elem.getProperty('className')).jsonValue();
+        const ids = await (await $elem.getProperty('id')).jsonValue();
+        if (Array.isArray(classes)) {
+            state.classes.push(...classes);
+        }
+        else {
+            state.classes.push(classes);
+        }
+        if (Array.isArray(ids)) {
+            state.ids.push(...ids);
+        }
+        else {
+            state.ids.push(ids);
+        }
+    }
+    const idSet = new Set(state.ids.filter(id => id?.length > 0).sort());
+    const classesSet = new Set(state.classes.filter(id => id?.length > 0).sort());
+    for (const id of idSet) {
+        console.log(`#${id}`);
+    }
+    for (const klassy of classesSet) {
+        console.log(`.${klassy}`);
+    }
+};
 /**
  * the main application
  *
@@ -49,6 +80,11 @@ export const hq = async (args, opts = {}) => {
     else {
         const html = await readStream(input);
         await page.setContent(html);
+    }
+    if (args.ls) {
+        await suggestSelectors(page, { input, output });
+        await browser.close();
+        return;
     }
     const elems = await page.$$(args['<selector>']);
     const contentPromises = elems.map(elem => page.evaluate(extractElement, elem));

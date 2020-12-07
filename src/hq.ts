@@ -44,6 +44,52 @@ export const extractElement = (elem:any) => {
   return result
 }
 
+
+interface SuggestSelectorArgs {
+  input: any,
+  output: any
+}
+
+interface Fleep {
+  ids: any[],
+  classes: any[]
+}
+
+export const suggestSelectors = async (page: puppeteer.Page, args: SuggestSelectorArgs) => {
+  const $elems = await page.$$('*')
+  const state:Fleep = {
+    ids: [],
+    classes: []
+  }
+
+  for (const $elem of $elems) {
+    const classes = await (await $elem.getProperty('className')).jsonValue()
+    const ids = await (await $elem.getProperty('id')).jsonValue()
+
+    if (Array.isArray(classes)) {
+      state.classes.push(...classes as any)
+    } else {
+      state.classes.push(classes)
+    }
+
+    if (Array.isArray(ids)) {
+      state.ids.push(...ids as any)
+    } else {
+      state.ids.push(ids)
+    }
+  }
+
+  const idSet = new Set(state.ids.filter(id => id?.length > 0).sort())
+  const classesSet = new Set(state.classes.filter(id => id?.length > 0).sort())
+
+  for (const id of idSet) {
+    console.log(`#${id}`)
+  }
+  for (const klassy of classesSet) {
+    console.log(`.${klassy}`)
+  }
+}
+
 /**
  * the main application
  *
@@ -65,6 +111,12 @@ export const hq = async (args: HqArgs, opts: HqOpts = {}) => {
   } else {
     const html = await readStream(input)
     await page.setContent(html)
+  }
+
+  if (args.ls) {
+    await suggestSelectors(page, { input, output })
+    await browser.close()
+    return
   }
 
   const elems = await page.$$(args['<selector>'])

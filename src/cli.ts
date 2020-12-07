@@ -7,6 +7,7 @@ Name:
   hq - commandline HTTP processor
 
 Usage:
+  hq ls [<url>]
   hq <selector> [<url>]
 
 Description:

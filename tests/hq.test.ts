@@ -47,7 +47,7 @@ const testHq = async (childTest:any) => {
       }
     }
 
-    hq({ '<selector>': 'p' }, {
+    hq({ '<selector>': 'p', ls: false }, {
       in: Readable.from( Buffer.from(html) ),
       out
     })

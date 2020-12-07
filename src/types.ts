@@ -3,7 +3,8 @@ import { Stream } from "stream";
 
 export interface HqArgs {
   '<selector>': string,
-  '<url>'?: string
+  '<url>'?: string,
+  ls: Boolean
 }
 
 export interface HqOpts {
