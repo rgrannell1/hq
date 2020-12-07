@@ -50,38 +50,48 @@ interface SuggestSelectorArgs {
   output: any
 }
 
-interface Fleep {
+interface SelectorState {
   ids: any[],
-  classes: any[]
+  classes: any[],
+  tags:any[]
 }
 
 export const suggestSelectors = async (page: puppeteer.Page, args: SuggestSelectorArgs) => {
   const $elems = await page.$$('*')
-  const state:Fleep = {
+  const state:SelectorState = {
     ids: [],
-    classes: []
+    classes: [],
+    tags: []
   }
 
   for (const $elem of $elems) {
     const classes = await (await $elem.getProperty('className')).jsonValue()
     const ids = await (await $elem.getProperty('id')).jsonValue()
+    const tag = await (await $elem.getProperty('tagName')).jsonValue()
 
-    if (Array.isArray(classes)) {
-      state.classes.push(...classes as any)
-    } else {
-      state.classes.push(classes)
+    if (typeof classes === 'string') {
+      const items = (classes as string).split(' ')
+      state.classes.push(...items)
     }
 
-    if (Array.isArray(ids)) {
-      state.ids.push(...ids as any)
-    } else {
-      state.ids.push(ids)
+    if (typeof ids === 'string') {
+      const items = (ids as string).split(' ')
+      state.ids.push(...items)
+    }
+
+    if (typeof tag === 'string') {
+      const items = (tag as string).split(' ')
+      state.tags.push(...items)
     }
   }
 
   const idSet = new Set(state.ids.filter(id => id?.length > 0).sort())
   const classesSet = new Set(state.classes.filter(id => id?.length > 0).sort())
+  const tagSet = new Set(state.tags.filter(id => id?.length > 0).sort())
 
+  for (const tag of tagSet) {
+    console.log(`#${tag}`)
+  }
   for (const id of idSet) {
     console.log(`#${id}`)
   }

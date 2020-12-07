@@ -34,26 +34,32 @@ export const suggestSelectors = async (page, args) => {
     const $elems = await page.$$('*');
     const state = {
         ids: [],
-        classes: []
+        classes: [],
+        tags: []
     };
     for (const $elem of $elems) {
         const classes = await (await $elem.getProperty('className')).jsonValue();
         const ids = await (await $elem.getProperty('id')).jsonValue();
-        if (Array.isArray(classes)) {
-            state.classes.push(...classes);
+        const tag = await (await $elem.getProperty('tagName')).jsonValue();
+        if (typeof classes === 'string') {
+            const items = classes.split(' ');
+            state.classes.push(...items);
         }
-        else {
-            state.classes.push(classes);
+        if (typeof ids === 'string') {
+            const items = ids.split(' ');
+            state.ids.push(...items);
         }
-        if (Array.isArray(ids)) {
-            state.ids.push(...ids);
-        }
-        else {
-            state.ids.push(ids);
+        if (typeof tag === 'string') {
+            const items = tag.split(' ');
+            state.tags.push(...items);
         }
     }
     const idSet = new Set(state.ids.filter(id => id?.length > 0).sort());
     const classesSet = new Set(state.classes.filter(id => id?.length > 0).sort());
+    const tagSet = new Set(state.tags.filter(id => id?.length > 0).sort());
+    for (const tag of tagSet) {
+        console.log(`#${tag}`);
+    }
     for (const id of idSet) {
         console.log(`#${id}`);
     }
