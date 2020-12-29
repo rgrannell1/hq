@@ -3,7 +3,11 @@ import {
   HqArgs,
   HqOpts
 } from './types'
-import puppeteer from 'puppeteer'
+
+import puppeteerExtra from 'puppeteer-extra'
+import stealth from 'puppeteer-extra-plugin-stealth'
+
+puppeteerExtra.use(stealth())
 
 /**
  * readStream reads content from a stream and returns a utf8 string
@@ -56,7 +60,7 @@ interface SelectorState {
   tags:any[]
 }
 
-export const suggestSelectors = async (page: puppeteer.Page, args: SuggestSelectorArgs) => {
+export const suggestSelectors = async (page: any, args: SuggestSelectorArgs) => {
   const $elems = await page.$$('*')
   const state:SelectorState = {
     ids: [],
@@ -110,14 +114,24 @@ export const hq = async (args: HqArgs, opts: HqOpts = {}) => {
   const input = opts.in ?? process.stdin
   const output = opts.out ?? process.stdout
 
-  const browser = await puppeteer.launch({
-    headless: true
+  const browser = await puppeteerExtra.launch({
+    headless: true,
+    executablePath: args['--exec']
   })
 
   const page = await browser.newPage()
 
   if (args['<url>']) {
-    await page.goto(args['<url>'])
+    try {
+      await page.goto(args['<url>'])
+    } catch (err) {
+      if (err.message.includes('invalid URL')) {
+        console.error(`"${args['<url>']}" is an invalid URL; did you mix up argument order?`)
+        await browser.close()
+        return
+      }
+      throw err
+    }
   } else {
     const html = await readStream(input)
     await page.setContent(html)
