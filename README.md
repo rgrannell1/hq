@@ -23,7 +23,8 @@ hq reads html on standard-input and selects elements based on a query-selector. 
 for accessing sites with client-side rendering.
 
 ```sh
-hq <selector> [<url>]
+hq ls [<url>] [--exec <path>]
+hq <selector> [<url>] [--exec <path>]
 ```
 
 ```sh
