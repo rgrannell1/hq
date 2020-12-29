@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import docopt from 'docopt';
 import hq from './hq.js';
 const docs = `

@@ -29,7 +29,7 @@ const testHq = async (childTest) => {
                 const parsed = JSON.parse(content);
                 tap.equals(parsed.text, 'content');
                 tap.equals(parsed.attr0, 'val0');
-                resolve();
+                resolve(undefined);
             }
         };
         hq({ '<selector>': 'p', ls: false }, {

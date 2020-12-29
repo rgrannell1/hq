@@ -43,7 +43,7 @@ const testHq = async (childTest:any) => {
         tap.equals(parsed.text, 'content')
         tap.equals(parsed.attr0, 'val0')
 
-        resolve()
+        resolve(undefined)
       }
     }
 
